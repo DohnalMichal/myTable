@@ -17,9 +17,9 @@
     <h2>Tabulka</h2>
     <form>
         Zadej počet sloupců:<br> 
-        <input id="collumn" type="number"><br>
+        <input id="collumn" type="number" required><br>
         Zadej počet řádků:<br> 
-        <input id="row" type="number"><br>
+        <input id="row" type="number" required><br>
         <input class="button" type="button" onclick="myTable()" value="Vytvoř tabulku">
         <input type="button" onclick="location.reload()" value="Reset"><br>
     </form>
@@ -28,17 +28,26 @@
 
     <script>
     function myTable(){
-        var collumn = document.getElementById("collumn").value;
-        var row = document.getElementById("row").value;
+        var collumn = parseInt(document.getElementById("collumn").value);
+        var row = parseInt(document.getElementById("row").value);
+        var x, text;
 
-        for (var i = 0; i < collumn; i++) {
-            var r = document.getElementById("myTable").insertRow(i);
-            for (var j = 0; j < row; j++) {
-                var c = r.insertCell(j);
-                c.innerHTML = "Řádek " + i + " Sloupec " + j;
+        if (isNaN(collumn) || isNaN(row)){
+            alert ("Zadej číslo")
+        }
+        else if (collumn < 0 || row < 0){
+            alert ("Nemůžete zadat negativní číslo")
+        }
+        else {
+            for (var i = 0; i < collumn; i++) {
+                var r = document.getElementById("myTable").insertRow(i);
+                for (var j = 0; j < row; j++) {
+                    var c = r.insertCell(j);
+                    c.innerHTML = "Řádek " + i + " Sloupec " + j;
+                }
             }
         }
-    }
+    }    
     </script>
 </body>
 </html>
