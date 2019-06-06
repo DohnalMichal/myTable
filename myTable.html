@@ -1,53 +1,88 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Tabulka</title>
-
-    <style>
-        table{margin-top: 20px;text-align: center;}
-        table, td, tr{border: 1px solid black; border-collapse: collapse;}
-        td, tr {width: 5em;height: 5em;}
-        .button{margin-top: 5px;}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <title>Document</title>
+  <style>
+    body {font-family: sans-serif;}
+    table, tr, td, th {border: 1px solid black; border-collapse: collapse;}
+    td, th {padding: 2px 4px;}
+  </style>
 </head>
-<body>
-    <h2>Tabulka</h2>
-    <form>
-        Zadej počet sloupců:<br> 
-        <input id="collumn" type="number" required><br>
-        Zadej počet řádků:<br> 
-        <input id="row" type="number" required><br>
-        <input class="button" type="button" onclick="myTable()" value="Vytvoř tabulku">
-        <input type="button" onclick="location.reload()" value="Reset"><br>
-    </form>
-    <table id="myTable">
-    </table>
 
-    <script>
-    function myTable(){
-        var collumn = parseInt(document.getElementById("collumn").value);
-        var row = parseInt(document.getElementById("row").value);
-        var x, text;
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-        if (isNaN(collumn) || isNaN(row)){
-            alert ("Zadej číslo")
+<body onLoad="buildHtmlTable('#excelDataTable')">
+  <table id="excelDataTable" border="1">
+  </table>
+
+  <script>
+  var issues = [
+    {
+        "title": "very long notes are truncated",
+        "status": "open",
+        "labels": ["none", "support"],
+        "assignees": ["No one assigned"],
+        "dueDate": "none",
+        "targetRelease": "none",
+        "source": "github",
+        "link": "https://github.com/mudcube/MIDI.js/issues/246"
+    },
+    {
+        "title": "Changes in Red Hat registr",
+        "status": "CODING IN PROGRESS",
+        "labels": "none",
+        "assignees": ["Miguel Soriano"],
+        "dueDate": "none",
+        "targetRelease": "2.6 ER1",
+        "source": "jiro",
+        "link": "https://issues.jboss.org/projects/THREESCALE/issues/THREESCALE-2292?filter=allopenissues"
+    }
+  ]; 
+
+  
+
+  // Builds the HTML Table out of issues.
+  function buildHtmlTable(selector) {
+    var columns = addAllColumnHeaders(issues, selector);
+
+    for (var i = 0; i < issues.length; i++) {
+      var row$ = $('<tr/>');
+      for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+        var cellValue = issues[i][columns[colIndex]];
+        if (cellValue == null) cellValue = "";
+        row$.append($('<td/>').html(cellValue));
+      }
+      $(selector).append(row$);
+    }
+  }
+
+  // Adds a header row to the table and returns the set of columns.
+  // Need to do union of keys from all records as some records may not contain
+  // all records.
+  function addAllColumnHeaders(issues, selector) {
+    var columnSet = [];
+    var headerTr$ = $('<tr/>');
+
+    for (var i = 0; i < issues.length; i++) {
+      var rowHash = issues[i];
+      for (var key in rowHash) {
+        if ($.inArray(key, columnSet) == -1) {
+          columnSet.push(key);
+          headerTr$.append($('<th/>').html(key));
         }
-        else if (collumn < 0 || row < 0){
-            alert ("Nemůžete zadat negativní číslo")
-        }
-        else {
-            for (var i = 0; i < collumn; i++) {
-                var r = document.getElementById("myTable").insertRow(i);
-                for (var j = 0; j < row; j++) {
-                    var c = r.insertCell(j);
-                    c.innerHTML = "Řádek " + i + " Sloupec " + j;
-                }
-            }
-        }
-    }    
-    </script>
+      }
+    }
+    $(selector).append(headerTr$);
+
+    return columnSet;
+  }
+  </script>
+
 </body>
+
 </html>
